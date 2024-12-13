@@ -10,7 +10,10 @@ TASK_STATUS=0
 CODEBASE_LOCATION="${WORKSPACE}"/"${CODEBASE_DIR}"
 logInfoMessage "I'll do processing at [$CODEBASE_LOCATION]"
 sleep  $SLEEP_DURATION
-cd  "${CODEBASE_LOCATION}"
+#cd  "${CODEBASE_LOCATION}"
+echo "asgname=${ASG_NAME}"
+echo "launchtemplate_id=${LAUNCHTEMPLATE_ID}"
+aws sts get-caller-identity
 
 aws autoscaling start-instance-refresh \
   --auto-scaling-group-name "${ASG_NAME}" \
@@ -24,6 +27,7 @@ aws autoscaling start-instance-refresh \
 }
 EOF
 )"
+
 
 TASK_STATUS=$?
 saveTaskStatus ${TASK_STATUS} ${ACTIVITY_SUB_TASK_CODE}
