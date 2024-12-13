@@ -12,13 +12,18 @@ logInfoMessage "I'll do processing at [$CODEBASE_LOCATION]"
 sleep  $SLEEP_DURATION
 cd  "${CODEBASE_LOCATION}"
 
-TASK_STATUS=0
+aws autoscaling start-instance-refresh \
+  --auto-scaling-group-name "${ASG_NAME}" \
+  --preferences '{"InstanceWarmup": 30, "MinHealthyPercentage": 30, "SkipMatching": true}' \
+  --desired-configuration "$(cat <<EOF
+{
+    "LaunchTemplate": {
+        "LaunchTemplateId": "${LAUNCHTEMPLATE_ID}",
+        "Version": "\$Latest"
+    }
+}
+EOF
+)"
 
-if [condition]; then
-    logErrorMessage "Done the required operation"
-else
-    TASK_STATUS=1
-    logErrorMessage "Target server not provided please check"
-
-fi
+TASK_STATUS=$?
 saveTaskStatus ${TASK_STATUS} ${ACTIVITY_SUB_TASK_CODE}

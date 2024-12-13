@@ -1,13 +1,13 @@
-FROM alpine
-RUN apk add --no-cache --upgrade bash
-RUN apk add jq
+FROM amazon/aws-cli
 COPY build.sh .
 
 ADD BP-BASE-SHELL-STEPS /opt/buildpiper/shell-functions/
 
+ENV LAUNCHTEMPLATE_ID ""
+ENV ASG_NAME ""
 
 ENV SLEEP_DURATION 5s
-ENV ACTIVITY_SUB_TASK_CODE REPLACE_IT
+ENV ACTIVITY_SUB_TASK_CODE INSTANCE_REFERESH
 ENV VALIDATION_FAILURE_ACTION WARNING
 
 ENTRYPOINT [ "./build.sh" ]
